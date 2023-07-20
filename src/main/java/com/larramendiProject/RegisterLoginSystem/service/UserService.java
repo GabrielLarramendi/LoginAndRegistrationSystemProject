@@ -1,6 +1,7 @@
 package com.larramendiProject.RegisterLoginSystem.service;
 
 import com.larramendiProject.RegisterLoginSystem.dto.LoginDTO;
+import com.larramendiProject.RegisterLoginSystem.dto.UpdateUserEmailDTO;
 import com.larramendiProject.RegisterLoginSystem.dto.UpdateUserNameDTO;
 import com.larramendiProject.RegisterLoginSystem.dto.UserDTO;
 import com.larramendiProject.RegisterLoginSystem.response.LoginResponse;
@@ -18,7 +19,7 @@ public interface UserService {
 
     UpdateResponse updateUserName(UpdateUserNameDTO updateUserNameDTO, Long id);
 
-    UpdateResponse updateUserEmail(UserDTO userDTO, Long id);
+    UpdateResponse updateUserEmail(UpdateUserEmailDTO updateUserEmailDTO, Long id);
 
     UpdateResponse updateUserPassword(UserDTO userDTO, Long id);
 

@@ -1,6 +1,7 @@
 package com.larramendiProject.RegisterLoginSystem.service.implementation;
 
 import com.larramendiProject.RegisterLoginSystem.dto.LoginDTO;
+import com.larramendiProject.RegisterLoginSystem.dto.UpdateUserEmailDTO;
 import com.larramendiProject.RegisterLoginSystem.dto.UpdateUserNameDTO;
 import com.larramendiProject.RegisterLoginSystem.dto.UserDTO;
 import com.larramendiProject.RegisterLoginSystem.entity.User;
@@ -79,24 +80,24 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UpdateResponse updateUserEmail(UserDTO userDTO, Long id) {
+    public UpdateResponse updateUserEmail(UpdateUserEmailDTO updateUserEmailDTO, Long id) {
         User user = userRepository.findById(id).get();
-        String newEmail = userDTO.getEmail();
+        String newEmail = updateUserEmailDTO.getEmail();
         String currentEmail = user.getEmail();
 
         if (user != null) {
-            String password = userDTO.getPassword();
+            String newPassword = updateUserEmailDTO.getPassword();
             String encodedPassword = user.getPassword();
-            boolean isPwdRight = passwordEncoder.matches(password, encodedPassword);
+            boolean isPwdRight = passwordEncoder.matches(newPassword, encodedPassword);
             if (isPwdRight) {
                 if (newEmail != null && newEmail.equals(currentEmail)) {
                     throw new EmailAlreadyExistsException("O novo email é o mesmo que o email atualmente registrado na sua conta.");
                 }
-                User existentUserByEmail = userRepository.findByEmail(userDTO.getEmail());
+                User existentUserByEmail = userRepository.findByEmail(updateUserEmailDTO.getEmail());
                 if (existentUserByEmail != null) {
                     throw new EmailAlreadyExistsException("Este email já está sendo utilizado por outro usuário!");
                 }
-                user.setEmail(userDTO.getEmail());
+                user.setEmail(updateUserEmailDTO.getEmail());
                 userRepository.save(user);
                 return new UpdateResponse("Email alterado com sucesso!", true);
             } else {
