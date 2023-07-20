@@ -1,6 +1,7 @@
 package com.larramendiProject.RegisterLoginSystem.service.implementation;
 
 import com.larramendiProject.RegisterLoginSystem.dto.LoginDTO;
+import com.larramendiProject.RegisterLoginSystem.dto.UpdateUserNameDTO;
 import com.larramendiProject.RegisterLoginSystem.dto.UserDTO;
 import com.larramendiProject.RegisterLoginSystem.entity.User;
 import com.larramendiProject.RegisterLoginSystem.exceptions.EmailAlreadyExistsException;
@@ -58,18 +59,18 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UpdateResponse updateUserName(UserDTO userDTO, Long id) {
+    public UpdateResponse updateUserName(UpdateUserNameDTO updateUserNameDTO, Long id) {
         User user = userRepository.findById(id).get();
         if (user != null) {
-            String password = userDTO.getPassword();
+            String newPassword = updateUserNameDTO.getPassword();
             String encodedPassword = user.getPassword();
-            boolean isPwdRight = passwordEncoder.matches(password, encodedPassword);
+            boolean isPwdRight = passwordEncoder.matches(newPassword, encodedPassword);
             if (isPwdRight) {
-                user.setName(userDTO.getName());
+                user.setName(updateUserNameDTO.getName());
                 userRepository.save(user);
                 return new UpdateResponse("Nome alterado com sucesso!", true);
             } else {
-                return new UpdateResponse("Senha incorreta.", true);
+                return new UpdateResponse("Senha incorreta.", false);
             }
         }
         else {
@@ -100,6 +101,26 @@ public class UserServiceImplementation implements UserService {
                 return new UpdateResponse("Email alterado com sucesso!", true);
             } else {
                 return new UpdateResponse("Senha incorreta.", false);
+            }
+        }
+        else {
+            return new UpdateResponse("Usuario nao encontrado.", false);
+        }
+    }
+
+    @Override
+    public UpdateResponse updateUserPassword(UserDTO userDTO, Long id) {
+        User user = userRepository.findById(id).get();
+        if (user != null) {
+            String password = userDTO.getPassword();
+            String encodedPassword = user.getPassword();
+            boolean isPwdRight = passwordEncoder.matches(password, encodedPassword);
+            if (isPwdRight) {
+                user.setPassword(this.passwordEncoder.encode(userDTO.getPassword()));
+                userRepository.save(user);
+                return new UpdateResponse("Senha alterado com sucesso!", true);
+            } else {
+                return new UpdateResponse("Senha incorreta.", true);
             }
         }
         else {

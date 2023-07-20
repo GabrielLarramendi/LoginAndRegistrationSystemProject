@@ -1,6 +1,7 @@
 package com.larramendiProject.RegisterLoginSystem.userController;
 
 import com.larramendiProject.RegisterLoginSystem.dto.LoginDTO;
+import com.larramendiProject.RegisterLoginSystem.dto.UpdateUserNameDTO;
 import com.larramendiProject.RegisterLoginSystem.dto.UserDTO;
 import com.larramendiProject.RegisterLoginSystem.response.LoginResponse;
 import com.larramendiProject.RegisterLoginSystem.response.UpdateResponse;
@@ -38,19 +39,25 @@ public class UserController {
     }
 
     @PutMapping(path = "update/name/{id}")
-    public ResponseEntity<?> updateUserName(@RequestBody UserDTO userDTO, @PathVariable Long id) {
-        UpdateResponse updateMessage = userService.updateUserName(userDTO, id);
+    public ResponseEntity<UpdateResponse> updateUserName(@RequestBody UpdateUserNameDTO updateUserNameDTO, @PathVariable Long id) {
+        UpdateResponse updateMessage = userService.updateUserName(updateUserNameDTO, id);
         return ResponseEntity.ok(updateMessage);
     }
 
     @PutMapping(path = "update/email/{id}")
-    public ResponseEntity<?> updateUserEmail(@RequestBody UserDTO userDTO, @PathVariable Long id) {
+    public ResponseEntity<UpdateResponse> updateUserEmail(@RequestBody UserDTO userDTO, @PathVariable Long id) {
         UpdateResponse updateMessage = userService.updateUserEmail(userDTO, id);
         return ResponseEntity.ok(updateMessage);
     }
 
+    @PutMapping(path = "update/password/{id}")
+    public ResponseEntity<UpdateResponse> updateUserPassword(@RequestBody UserDTO userDTO, @PathVariable Long id) {
+        UpdateResponse updateMessage = userService.updateUserPassword(userDTO, id);
+        return ResponseEntity.ok(updateMessage);
+    }
+
     @PostMapping(path = "/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginDTO loginDTO) {
         LoginResponse loginMessage = userService.loginUser(loginDTO);
         return ResponseEntity.ok(loginMessage);
     }

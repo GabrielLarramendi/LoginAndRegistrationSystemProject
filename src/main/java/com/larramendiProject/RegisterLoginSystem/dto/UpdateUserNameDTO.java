@@ -1,28 +1,15 @@
 package com.larramendiProject.RegisterLoginSystem.dto;
 
-public class UserDTO {
-
-    private Long id;
+public class UpdateUserNameDTO {
     private String name;
-    private String email;
     private String password;
 
-    public UserDTO() {
+    public UpdateUserNameDTO() {
     }
 
-    public UserDTO(Long id, String name, String email, String password) {
-        this.id = id;
+    public UpdateUserNameDTO(Long id, String name, String password) {
         this.name = name;
-        this.email = email;
         this.password = password;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -31,14 +18,6 @@ public class UserDTO {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPassword() {
