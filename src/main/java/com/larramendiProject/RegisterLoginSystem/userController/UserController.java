@@ -1,9 +1,6 @@
 package com.larramendiProject.RegisterLoginSystem.userController;
 
-import com.larramendiProject.RegisterLoginSystem.dto.LoginDTO;
-import com.larramendiProject.RegisterLoginSystem.dto.UpdateUserEmailDTO;
-import com.larramendiProject.RegisterLoginSystem.dto.UpdateUserNameDTO;
-import com.larramendiProject.RegisterLoginSystem.dto.UserDTO;
+import com.larramendiProject.RegisterLoginSystem.dto.*;
 import com.larramendiProject.RegisterLoginSystem.response.LoginResponse;
 import com.larramendiProject.RegisterLoginSystem.response.UpdateResponse;
 import com.larramendiProject.RegisterLoginSystem.service.UserService;
@@ -52,8 +49,8 @@ public class UserController {
     }
 
     @PutMapping(path = "update/password/{id}")
-    public ResponseEntity<UpdateResponse> updateUserPassword(@RequestBody UserDTO userDTO, @PathVariable Long id) {
-        UpdateResponse updateMessage = userService.updateUserPassword(userDTO, id);
+    public ResponseEntity<UpdateResponse> updateUserPassword(@RequestBody UpdatePasswordDTO updatePasswordDTO, @PathVariable Long id) {
+        UpdateResponse updateMessage = userService.updateUserPassword(updatePasswordDTO, id);
         return ResponseEntity.ok(updateMessage);
     }
 

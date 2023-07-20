@@ -1,9 +1,6 @@
 package com.larramendiProject.RegisterLoginSystem.service.implementation;
 
-import com.larramendiProject.RegisterLoginSystem.dto.LoginDTO;
-import com.larramendiProject.RegisterLoginSystem.dto.UpdateUserEmailDTO;
-import com.larramendiProject.RegisterLoginSystem.dto.UpdateUserNameDTO;
-import com.larramendiProject.RegisterLoginSystem.dto.UserDTO;
+import com.larramendiProject.RegisterLoginSystem.dto.*;
 import com.larramendiProject.RegisterLoginSystem.entity.User;
 import com.larramendiProject.RegisterLoginSystem.exceptions.EmailAlreadyExistsException;
 import com.larramendiProject.RegisterLoginSystem.exceptions.IdNotFoundException;
@@ -110,18 +107,25 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UpdateResponse updateUserPassword(UserDTO userDTO, Long id) {
+    public UpdateResponse updateUserPassword(UpdatePasswordDTO updatePasswordDTO, Long id) {
         User user = userRepository.findById(id).get();
         if (user != null) {
-            String password = userDTO.getPassword();
+            String currentPwdToConfirm = updatePasswordDTO.getOldPwd();
             String encodedPassword = user.getPassword();
-            boolean isPwdRight = passwordEncoder.matches(password, encodedPassword);
+            boolean isPwdRight = passwordEncoder.matches(currentPwdToConfirm, encodedPassword);
             if (isPwdRight) {
-                user.setPassword(this.passwordEncoder.encode(userDTO.getPassword()));
-                userRepository.save(user);
-                return new UpdateResponse("Senha alterado com sucesso!", true);
+                String newPwd = updatePasswordDTO.getNewPwd();
+                String confirmNewPwd = updatePasswordDTO.getConfirmNewPwd();
+                if (newPwd.equals(confirmNewPwd)) {
+                    user.setPassword(this.passwordEncoder.encode(updatePasswordDTO.getNewPwd()));
+                    userRepository.save(user);
+                    return new UpdateResponse("Senha alterado com sucesso!", true);
+                }
+                else {
+                    return new UpdateResponse("A confirmacao da senha nao confere com a nova senha informada.", false);
+                }
             } else {
-                return new UpdateResponse("Senha incorreta.", true);
+                return new UpdateResponse("Senha atual incorreta.", true);
             }
         }
         else {
