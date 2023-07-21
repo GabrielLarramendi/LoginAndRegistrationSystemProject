@@ -4,6 +4,7 @@ import com.larramendiProject.RegisterLoginSystem.dto.*;
 import com.larramendiProject.RegisterLoginSystem.response.LoginResponse;
 import com.larramendiProject.RegisterLoginSystem.response.UpdateResponse;
 import com.larramendiProject.RegisterLoginSystem.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping(path = "/save")
-    public ResponseEntity<UserDTO> saveUser(@RequestBody UserDTO userDto) {
+    public ResponseEntity<UserDTO> saveUser(@Valid @RequestBody UserDTO userDto) {
         UserDTO user = userService.saveUser(userDto);
         return ResponseEntity.ok(user);
     }

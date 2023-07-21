@@ -58,78 +58,73 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UpdateResponse updateUserName(UpdateUserNameDTO updateUserNameDTO, Long id) {
-        User user = userRepository.findById(id).get();
-        if (user != null) {
-            String newPassword = updateUserNameDTO.getPassword();
-            String encodedPassword = user.getPassword();
-            boolean isPwdRight = passwordEncoder.matches(newPassword, encodedPassword);
-            if (isPwdRight) {
-                user.setName(updateUserNameDTO.getName());
-                userRepository.save(user);
-                return new UpdateResponse("Nome alterado com sucesso!", true);
-            } else {
-                return new UpdateResponse("Senha incorreta.", false);
-            }
-        }
-        else {
-            return new UpdateResponse("Usuario nao encontrado.", false);
+        User user = userRepository
+                .findById(id)
+                .orElseThrow(() -> new IdNotFoundException("Usuario com o Id '" + id + "' nao encontrado."));
+
+        String newPassword = updateUserNameDTO.getPassword();
+        String encodedPassword = user.getPassword();
+        boolean isPwdRight = passwordEncoder.matches(newPassword, encodedPassword);
+        if (isPwdRight) {
+            user.setName(updateUserNameDTO.getName());
+            userRepository.save(user);
+            return new UpdateResponse("Nome alterado com sucesso!", true);
+        } else {
+            return new UpdateResponse("Senha incorreta.", false);
         }
     }
 
     @Override
     public UpdateResponse updateUserEmail(UpdateUserEmailDTO updateUserEmailDTO, Long id) {
-        User user = userRepository.findById(id).get();
+        User user = userRepository
+                .findById(id)
+                .orElseThrow(() -> new IdNotFoundException("Usuario com o Id '" + id + "' nao encontrado."));
+
         String newEmail = updateUserEmailDTO.getEmail();
         String currentEmail = user.getEmail();
 
-        if (user != null) {
-            String newPassword = updateUserEmailDTO.getPassword();
-            String encodedPassword = user.getPassword();
-            boolean isPwdRight = passwordEncoder.matches(newPassword, encodedPassword);
-            if (isPwdRight) {
-                if (newEmail != null && newEmail.equals(currentEmail)) {
-                    throw new EmailAlreadyExistsException("O novo email é o mesmo que o email atualmente registrado na sua conta.");
-                }
-                User existentUserByEmail = userRepository.findByEmail(updateUserEmailDTO.getEmail());
-                if (existentUserByEmail != null) {
-                    throw new EmailAlreadyExistsException("Este email já está sendo utilizado por outro usuário!");
-                }
-                user.setEmail(updateUserEmailDTO.getEmail());
-                userRepository.save(user);
-                return new UpdateResponse("Email alterado com sucesso!", true);
-            } else {
-                return new UpdateResponse("Senha incorreta.", false);
+        String newPassword = updateUserEmailDTO.getPassword();
+        String encodedPassword = user.getPassword();
+        boolean isPwdRight = passwordEncoder.matches(newPassword, encodedPassword);
+        if (isPwdRight) {
+            if (newEmail != null && newEmail.equals(currentEmail)) {
+                throw new EmailAlreadyExistsException("O novo email é o mesmo que o email atualmente registrado na sua conta.");
             }
+            User existentUserByEmail = userRepository.findByEmail(updateUserEmailDTO.getEmail());
+            if (existentUserByEmail != null) {
+                throw new EmailAlreadyExistsException("Este email já está sendo utilizado por outro usuário!");
+            }
+            user.setEmail(updateUserEmailDTO.getEmail());
+            userRepository.save(user);
+            return new UpdateResponse("Email alterado com sucesso!", true);
+        } else {
+            return new UpdateResponse("Senha incorreta.", false);
         }
-        else {
-            return new UpdateResponse("Usuario nao encontrado.", false);
-        }
+
     }
 
     @Override
     public UpdateResponse updateUserPassword(UpdatePasswordDTO updatePasswordDTO, Long id) {
-        User user = userRepository.findById(id).get();
-        if (user != null) {
-            String currentPwdToConfirm = updatePasswordDTO.getOldPwd();
-            String encodedPassword = user.getPassword();
-            boolean isPwdRight = passwordEncoder.matches(currentPwdToConfirm, encodedPassword);
-            if (isPwdRight) {
-                String newPwd = updatePasswordDTO.getNewPwd();
-                String confirmNewPwd = updatePasswordDTO.getConfirmNewPwd();
-                if (newPwd.equals(confirmNewPwd)) {
-                    user.setPassword(this.passwordEncoder.encode(updatePasswordDTO.getNewPwd()));
-                    userRepository.save(user);
-                    return new UpdateResponse("Senha alterado com sucesso!", true);
-                }
-                else {
-                    return new UpdateResponse("A confirmacao da senha nao confere com a nova senha informada.", false);
-                }
-            } else {
-                return new UpdateResponse("Senha atual incorreta.", true);
+        User user = userRepository
+                .findById(id)
+                .orElseThrow(() -> new IdNotFoundException("Usuario com o Id '" + id + "' nao encontrado."));
+
+        String currentPwdToConfirm = updatePasswordDTO.getOldPwd();
+        String encodedPassword = user.getPassword();
+        boolean isPwdRight = passwordEncoder.matches(currentPwdToConfirm, encodedPassword);
+        if (isPwdRight) {
+            String newPwd = updatePasswordDTO.getNewPwd();
+            String confirmNewPwd = updatePasswordDTO.getConfirmNewPwd();
+            if (newPwd.equals(confirmNewPwd)) {
+                user.setPassword(this.passwordEncoder.encode(updatePasswordDTO.getNewPwd()));
+                userRepository.save(user);
+                return new UpdateResponse("Senha alterado com sucesso!", true);
             }
-        }
-        else {
-            return new UpdateResponse("Usuario nao encontrado.", false);
+            else {
+                return new UpdateResponse("A confirmacao da senha nao confere com a nova senha informada.", false);
+            }
+        } else {
+            return new UpdateResponse("Senha atual incorreta.", true);
         }
     }
 
@@ -151,15 +146,15 @@ public class UserServiceImplementation implements UserService {
             if (isPwdRight) {
                 Optional<User> user1 = userRepository.findOneByEmailAndPassword(loginDTO.getEmail(), encodedPassword);
                 if (user1.isPresent()) {
-                    return new LoginResponse("Login Success", true);
+                    return new LoginResponse("Entrou", true);
                 } else {
-                    return new LoginResponse("Login Failed", false);
+                    return new LoginResponse("Falhou", false);
                 }
             } else {
-                return new LoginResponse("password Not Match", false);
+                return new LoginResponse("Senha incorreta", false);
             }
         } else {
-            return new LoginResponse("Email not exits", false);
+            return new LoginResponse("Email nao existe", false);
         }
     }
 

@@ -1,10 +1,21 @@
 package com.larramendiProject.RegisterLoginSystem.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+
 public class UserDTO {
 
     private Long id;
+
+    @NotEmpty(message = "Campo obrigatorio!")
     private String name;
+
+    @Email(message = "Insira um formato de e-mail valido!")
+    @NotEmpty(message = "Campo obrigatorio!")
     private String email;
+
+    @NotBlank(message = "Campo obrigatorio!")
     private String password;
 
     public UserDTO() {

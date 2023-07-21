@@ -1,6 +1,9 @@
 package com.larramendiProject.RegisterLoginSystem.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "tb_user")
@@ -17,7 +20,7 @@ public class User {
     @Column(name = "user_email", length = 255)
     private String email;
 
-    @Column(name = "user_password", length = 255)
+    @Column(name = "user_password")
     private String password;
 
     public User() {
