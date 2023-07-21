@@ -38,13 +38,13 @@ public class UserController {
     }
 
     @PutMapping(path = "update/name/{id}")
-    public ResponseEntity<UpdateResponse> updateUserName(@RequestBody UpdateUserNameDTO updateUserNameDTO, @PathVariable Long id) {
+    public ResponseEntity<UpdateResponse> updateUserName(@Valid @RequestBody UpdateUserNameDTO updateUserNameDTO, @PathVariable Long id) {
         UpdateResponse updateMessage = userService.updateUserName(updateUserNameDTO, id);
         return ResponseEntity.ok(updateMessage);
     }
 
     @PutMapping(path = "update/email/{id}")
-    public ResponseEntity<UpdateResponse> updateUserEmail(@RequestBody UpdateUserEmailDTO updateUserEmailDTO, @PathVariable Long id) {
+    public ResponseEntity<UpdateResponse> updateUserEmail(@Valid @RequestBody UpdateUserEmailDTO updateUserEmailDTO, @PathVariable Long id) {
         UpdateResponse updateMessage = userService.updateUserEmail(updateUserEmailDTO, id);
         return ResponseEntity.ok(updateMessage);
     }

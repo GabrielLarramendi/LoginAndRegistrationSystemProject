@@ -1,7 +1,13 @@
 package com.larramendiProject.RegisterLoginSystem.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+
 public class UpdateUserNameDTO {
+
+    @NotEmpty(message = "Campo obrigatorio!")
     private String name;
+
+    @NotEmpty(message = "Campo obrigatorio!")
     private String password;
 
     public UpdateUserNameDTO() {
