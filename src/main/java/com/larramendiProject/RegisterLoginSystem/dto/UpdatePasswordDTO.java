@@ -1,8 +1,15 @@
 package com.larramendiProject.RegisterLoginSystem.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+
 public class UpdatePasswordDTO {
+
+    @NotEmpty(message = "Campo obrigatorio!")
     private String oldPwd;
+    @NotEmpty(message = "Campo obrigatorio!")
     private String newPwd;
+    @NotEmpty(message = "Campo obrigatorio!")
     private String confirmNewPwd;
 
     public UpdatePasswordDTO() {
