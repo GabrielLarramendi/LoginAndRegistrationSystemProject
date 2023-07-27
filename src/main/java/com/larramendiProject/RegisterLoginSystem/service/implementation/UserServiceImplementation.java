@@ -24,6 +24,7 @@ public class UserServiceImplementation implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @Override
     public List<UserDTO> findAll() {
         List<User> savedListUsers = userRepository.findAll();
@@ -66,7 +67,7 @@ public class UserServiceImplementation implements UserService {
         }
 
         if (!userDTO.getEmail().isEmpty()) {
-            updateEmail(userDTO, user);
+            updateEmailValidation(userDTO, user);
         }
 
         userRepository.save(user);
@@ -94,7 +95,7 @@ public class UserServiceImplementation implements UserService {
                 return new UpdateResponse("A confirmacao da senha nao confere com a nova senha informada.", false);
             }
         } else {
-            return new UpdateResponse("Senha atual incorreta.", true);
+            return new UpdateResponse("Senha atual incorreta.", false);
         }
     }
 
@@ -137,7 +138,7 @@ public class UserServiceImplementation implements UserService {
         return userDTO;
     }
 
-    public void updateEmail(UserDTO userDTO, User user) {
+    public void updateEmailValidation(UserDTO userDTO, User user) {
         String newEmail = userDTO.getEmail();
         String currentEmail = user.getEmail();
 
@@ -158,6 +159,7 @@ public class UserServiceImplementation implements UserService {
             throw new InvalidPasswordException("Senha incorreta!");
         }
     }
+
 }
 
 
