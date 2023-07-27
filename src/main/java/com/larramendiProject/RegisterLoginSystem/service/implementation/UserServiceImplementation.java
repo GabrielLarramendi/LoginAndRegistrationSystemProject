@@ -4,6 +4,7 @@ import com.larramendiProject.RegisterLoginSystem.dto.*;
 import com.larramendiProject.RegisterLoginSystem.entity.User;
 import com.larramendiProject.RegisterLoginSystem.exceptions.EmailAlreadyExistsException;
 import com.larramendiProject.RegisterLoginSystem.exceptions.IdNotFoundException;
+import com.larramendiProject.RegisterLoginSystem.exceptions.InvalidPasswordException;
 import com.larramendiProject.RegisterLoginSystem.response.LoginResponse;
 import com.larramendiProject.RegisterLoginSystem.repository.UserRepository;
 import com.larramendiProject.RegisterLoginSystem.response.UpdateResponse;
@@ -22,7 +23,6 @@ public class UserServiceImplementation implements UserService {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
 
     @Override
     public List<UserDTO> findAll() {
@@ -51,56 +51,26 @@ public class UserServiceImplementation implements UserService {
         if (userByEmail != null && userByEmail.getEmail() != null) {
             throw new EmailAlreadyExistsException("Esse e-mail ja esta cadastrado!");
         }
-        ;
         userRepository.save(user);
         return mapUserToUserDto(user);
     }
 
     @Override
-    public UpdateResponse updateUserName(UpdateUserNameDTO updateUserNameDTO, Long id) {
+    public UserDTO updateData(UserDTO userDTO, Long id) {
         User user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new IdNotFoundException("Usuario com o Id '" + id + "' nao encontrado."));
 
-        String newPassword = updateUserNameDTO.getPassword();
-        String encodedPassword = user.getPassword();
-        boolean isPwdRight = passwordEncoder.matches(newPassword, encodedPassword);
-        if (isPwdRight) {
-            user.setName(updateUserNameDTO.getName());
-            userRepository.save(user);
-            return new UpdateResponse("Nome alterado com sucesso!", true);
-        } else {
-            return new UpdateResponse("Senha incorreta.", false);
-        }
-    }
-
-    @Override
-    public UpdateResponse updateUserEmail(UpdateUserEmailDTO updateUserEmailDTO, Long id) {
-        User user = userRepository
-                .findById(id)
-                .orElseThrow(() -> new IdNotFoundException("Usuario com o Id '" + id + "' nao encontrado."));
-
-        String newEmail = updateUserEmailDTO.getEmail();
-        String currentEmail = user.getEmail();
-
-        String newPassword = updateUserEmailDTO.getPassword();
-        String encodedPassword = user.getPassword();
-        boolean isPwdRight = passwordEncoder.matches(newPassword, encodedPassword);
-        if (isPwdRight) {
-            if (newEmail != null && newEmail.equals(currentEmail)) {
-                throw new EmailAlreadyExistsException("O novo email é o mesmo que o email atualmente registrado na sua conta.");
-            }
-            User existentUserByEmail = userRepository.findByEmail(updateUserEmailDTO.getEmail());
-            if (existentUserByEmail != null) {
-                throw new EmailAlreadyExistsException("Este email já está sendo utilizado por outro usuário!");
-            }
-            user.setEmail(updateUserEmailDTO.getEmail());
-            userRepository.save(user);
-            return new UpdateResponse("Email alterado com sucesso!", true);
-        } else {
-            return new UpdateResponse("Senha incorreta.", false);
+        if (!userDTO.getName().isEmpty()) {
+            user.setName(userDTO.getName());
         }
 
+        if (!userDTO.getEmail().isEmpty()) {
+            updateEmail(userDTO, user);
+        }
+
+        userRepository.save(user);
+        return mapUserToUserDto(user);
     }
 
     @Override
@@ -167,6 +137,27 @@ public class UserServiceImplementation implements UserService {
         return userDTO;
     }
 
+    public void updateEmail(UserDTO userDTO, User user) {
+        String newEmail = userDTO.getEmail();
+        String currentEmail = user.getEmail();
+
+        String newPassword = userDTO.getPassword();
+        String encodedPassword = user.getPassword();
+        boolean isPwdRight = passwordEncoder.matches(newPassword, encodedPassword);
+        if (isPwdRight) {
+            if (newEmail != null && newEmail.equals(currentEmail)) {
+                throw new EmailAlreadyExistsException("O novo email é o mesmo que o email atualmente registrado na sua conta.");
+            }
+            User existentUserByEmail = userRepository.findByEmail(userDTO.getEmail());
+            if (existentUserByEmail != null) {
+                throw new EmailAlreadyExistsException("Este email já está sendo utilizado por outro usuário!");
+            }
+            user.setEmail(userDTO.getEmail());
+            userRepository.save(user);
+        } else {
+            throw new InvalidPasswordException("Senha incorreta!");
+        }
+    }
 }
 
 

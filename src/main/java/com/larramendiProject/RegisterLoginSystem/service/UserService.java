@@ -14,9 +14,7 @@ public interface UserService {
 
     UserDTO saveUser(UserDTO userDto);
 
-    UpdateResponse updateUserName(UpdateUserNameDTO updateUserNameDTO, Long id);
-
-    UpdateResponse updateUserEmail(UpdateUserEmailDTO updateUserEmailDTO, Long id);
+    UserDTO updateData(UserDTO userDTO, Long id);
 
     UpdateResponse updateUserPassword(UpdatePasswordDTO updatePasswordDTO, Long id);
 

@@ -8,14 +8,11 @@ public class UserDTO {
 
     private Long id;
 
-    @NotEmpty(message = "Campo obrigatorio!")
     private String name;
 
     @Email(message = "Insira um formato de e-mail valido!")
-    @NotEmpty(message = "Campo obrigatorio!")
     private String email;
 
-    @NotBlank(message = "Campo obrigatorio!")
     private String password;
 
     public UserDTO() {

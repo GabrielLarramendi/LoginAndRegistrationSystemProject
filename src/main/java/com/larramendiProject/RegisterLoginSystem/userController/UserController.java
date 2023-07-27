@@ -37,16 +37,10 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping(path = "update/name/{id}")
-    public ResponseEntity<UpdateResponse> updateUserName(@Valid @RequestBody UpdateUserNameDTO updateUserNameDTO, @PathVariable Long id) {
-        UpdateResponse updateMessage = userService.updateUserName(updateUserNameDTO, id);
-        return ResponseEntity.ok(updateMessage);
-    }
-
-    @PutMapping(path = "update/email/{id}")
-    public ResponseEntity<UpdateResponse> updateUserEmail(@Valid @RequestBody UpdateUserEmailDTO updateUserEmailDTO, @PathVariable Long id) {
-        UpdateResponse updateMessage = userService.updateUserEmail(updateUserEmailDTO, id);
-        return ResponseEntity.ok(updateMessage);
+    @PutMapping(path = "updateData/{id}")
+    public ResponseEntity<UserDTO> updateUserData(@RequestBody UserDTO userDTO, @PathVariable Long id) {
+        UserDTO updatingUser = userService.updateData(userDTO, id);
+        return ResponseEntity.ok(updatingUser);
     }
 
     @PutMapping(path = "update/password/{id}")

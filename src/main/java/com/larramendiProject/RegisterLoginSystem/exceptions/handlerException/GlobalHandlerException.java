@@ -3,6 +3,7 @@ package com.larramendiProject.RegisterLoginSystem.exceptions.handlerException;
 import com.larramendiProject.RegisterLoginSystem.exceptions.EmailAlreadyExistsException;
 import com.larramendiProject.RegisterLoginSystem.exceptions.ErrorDetails;
 import com.larramendiProject.RegisterLoginSystem.exceptions.IdNotFoundException;
+import com.larramendiProject.RegisterLoginSystem.exceptions.InvalidPasswordException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -35,21 +36,10 @@ public class GlobalHandlerException extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(errorDetails.getMessage());
     }
 
-    @Nullable
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers,
-                                                                  HttpStatusCode status,
-                                                                  WebRequest request) {
-
-        Map<String, String> errors = new HashMap<>();
-        List<ObjectError> errorList = ex.getBindingResult().getAllErrors();
-
-        errorList.forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String message = error.getDefaultMessage();
-            errors.put(fieldName, message);
-        });
-
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<String> handlerInvalidPwdException(InvalidPasswordException e) {
+        ErrorDetails errorDetails = new ErrorDetails(e.getMessage(), HttpStatus.CONFLICT.value());
+        return ResponseEntity.badRequest().body(errorDetails.getMessage());
     }
+
 }
