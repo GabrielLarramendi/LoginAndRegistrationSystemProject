@@ -20,10 +20,14 @@ import java.util.Optional;
 public class UserServiceImplementation implements UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserServiceImplementation(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @Autowired
     private PasswordEncoder passwordEncoder;
-
 
     @Override
     public List<UserDTO> findAll() {
@@ -52,6 +56,7 @@ public class UserServiceImplementation implements UserService {
         if (userByEmail != null && userByEmail.getEmail() != null) {
             throw new EmailAlreadyExistsException("Esse e-mail ja esta cadastrado!");
         }
+
         userRepository.save(user);
         return mapUserToUserDto(user);
     }
@@ -67,7 +72,7 @@ public class UserServiceImplementation implements UserService {
         }
 
         if (!userDTO.getEmail().isEmpty()) {
-            updateEmailValidation(userDTO, user);
+            emailValidation(userDTO, user);
         }
 
         userRepository.save(user);
@@ -129,16 +134,7 @@ public class UserServiceImplementation implements UserService {
         }
     }
 
-    public UserDTO mapUserToUserDto (User user){
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setName(user.getName());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setPassword(user.getPassword());
-        return userDTO;
-    }
-
-    public void updateEmailValidation(UserDTO userDTO, User user) {
+    public void emailValidation(UserDTO userDTO, User user) {
         String newEmail = userDTO.getEmail();
         String currentEmail = user.getEmail();
 
@@ -159,6 +155,17 @@ public class UserServiceImplementation implements UserService {
             throw new InvalidPasswordException("Senha incorreta!");
         }
     }
+
+    public UserDTO mapUserToUserDto (User user){
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setName(user.getName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setPassword(user.getPassword());
+        return userDTO;
+    }
+
+
 
 }
 
