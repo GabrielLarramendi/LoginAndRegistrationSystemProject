@@ -1,15 +1,17 @@
 package com.larramendiProject.RegisterLoginSystem.service.implementation;
 
-import com.larramendiProject.RegisterLoginSystem.dto.*;
-import com.larramendiProject.RegisterLoginSystem.entity.User;
+import com.larramendiProject.RegisterLoginSystem.model.entity.User;
 import com.larramendiProject.RegisterLoginSystem.exceptions.EmailAlreadyExistsException;
+import com.larramendiProject.RegisterLoginSystem.exceptions.EmptyFieldException;
 import com.larramendiProject.RegisterLoginSystem.exceptions.IdNotFoundException;
 import com.larramendiProject.RegisterLoginSystem.exceptions.InvalidPasswordException;
-import com.larramendiProject.RegisterLoginSystem.response.LoginResponse;
+import com.larramendiProject.RegisterLoginSystem.model.dto.LoginDTO;
+import com.larramendiProject.RegisterLoginSystem.model.dto.UpdatePasswordDTO;
+import com.larramendiProject.RegisterLoginSystem.model.dto.UserDTO;
+import com.larramendiProject.RegisterLoginSystem.model.response.LoginResponse;
 import com.larramendiProject.RegisterLoginSystem.repository.UserRepository;
-import com.larramendiProject.RegisterLoginSystem.response.UpdateResponse;
+import com.larramendiProject.RegisterLoginSystem.model.response.UpdateResponse;
 import com.larramendiProject.RegisterLoginSystem.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +21,14 @@ import java.util.Optional;
 @Service
 public class UserServiceImplementation implements UserService {
 
-    @Autowired
+
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImplementation(UserRepository userRepository) {
+    public UserServiceImplementation(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<UserDTO> findAll() {
@@ -37,14 +38,24 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UserDTO findById(Long id) {
-        User savedUser = userRepository
-                .findById(id)
-                .orElseThrow(() -> new IdNotFoundException("Usuario com o Id '" + id + "' nao encontrado."));
-        return mapUserToUserDto(savedUser);
+        if (id != null) {
+            User savedUser = userRepository
+                    .findById(id)
+                    .orElseThrow(() -> new IdNotFoundException("Usuario com o Id '" + id + "' nao encontrado."));
+            return mapUserToUserDto(savedUser);
+        }
+        else {
+            throw new NullPointerException("Algum valor deve ser passado!");
+        }
     }
 
     @Override
     public UserDTO saveUser(UserDTO userDto) {
+
+        if (userDto.getName().isEmpty() || userDto.getEmail().isEmpty() || userDto.getPassword().isEmpty()) {
+            throw new EmptyFieldException("Todos os campos sao obrigatorios!");
+        }
+
         User user = new User(
                 userDto.getId(),
                 userDto.getName(),
@@ -164,8 +175,6 @@ public class UserServiceImplementation implements UserService {
         userDTO.setPassword(user.getPassword());
         return userDTO;
     }
-
-
 
 }
 

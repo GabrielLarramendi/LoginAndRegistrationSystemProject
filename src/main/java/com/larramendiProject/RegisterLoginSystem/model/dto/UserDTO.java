@@ -1,8 +1,6 @@
-package com.larramendiProject.RegisterLoginSystem.dto;
+package com.larramendiProject.RegisterLoginSystem.model.dto;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 
 import java.util.Objects;
 
@@ -12,7 +10,7 @@ public class UserDTO {
 
     private String name;
 
-    @Email(message = "Insira um formato de e-mail valido!")
+    @Email
     private String email;
 
     private String password;
@@ -57,6 +55,16 @@ public class UserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "UserDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.larramendiProject.RegisterLoginSystem.dto;
+package com.larramendiProject.RegisterLoginSystem.model.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

@@ -1,6 +1,6 @@
 package com.larramendiProject.RegisterLoginSystem.repository;
 
-import com.larramendiProject.RegisterLoginSystem.entity.User;
+import com.larramendiProject.RegisterLoginSystem.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

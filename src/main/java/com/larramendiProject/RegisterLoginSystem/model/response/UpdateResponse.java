@@ -1,13 +1,13 @@
-package com.larramendiProject.RegisterLoginSystem.response;
+package com.larramendiProject.RegisterLoginSystem.model.response;
 
-public class LoginResponse {
+public class UpdateResponse {
     String message;
     boolean status;
 
-    public LoginResponse() {
+    public UpdateResponse() {
     }
 
-    public LoginResponse(String message, boolean status) {
+    public UpdateResponse(String message, boolean status) {
         this.message = message;
         this.status = status;
     }
@@ -30,7 +30,7 @@ public class LoginResponse {
 
     @Override
     public String toString() {
-        return "LoginMessage{" +
+        return "UpdateMessage{" +
                 "message='" + message + '\'' +
                 ", status=" + status +
                 '}';

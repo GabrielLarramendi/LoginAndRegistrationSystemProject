@@ -1,4 +1,4 @@
-package com.larramendiProject.RegisterLoginSystem.dto;
+package com.larramendiProject.RegisterLoginSystem.model.dto;
 
 public class LoginDTO {
     private String email;

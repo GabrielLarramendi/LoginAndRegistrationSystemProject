@@ -1,8 +1,11 @@
 package com.larramendiProject.RegisterLoginSystem.userController;
 
 import com.larramendiProject.RegisterLoginSystem.dto.*;
-import com.larramendiProject.RegisterLoginSystem.response.LoginResponse;
-import com.larramendiProject.RegisterLoginSystem.response.UpdateResponse;
+import com.larramendiProject.RegisterLoginSystem.model.dto.LoginDTO;
+import com.larramendiProject.RegisterLoginSystem.model.dto.UpdatePasswordDTO;
+import com.larramendiProject.RegisterLoginSystem.model.dto.UserDTO;
+import com.larramendiProject.RegisterLoginSystem.model.response.LoginResponse;
+import com.larramendiProject.RegisterLoginSystem.model.response.UpdateResponse;
 import com.larramendiProject.RegisterLoginSystem.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
