@@ -1,6 +1,5 @@
 package com.larramendiProject.RegisterLoginSystem.userController;
 
-import com.larramendiProject.RegisterLoginSystem.dto.*;
 import com.larramendiProject.RegisterLoginSystem.model.dto.LoginDTO;
 import com.larramendiProject.RegisterLoginSystem.model.dto.UpdatePasswordDTO;
 import com.larramendiProject.RegisterLoginSystem.model.dto.UserDTO;

@@ -51,7 +51,6 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UserDTO saveUser(UserDTO userDto) {
-
         if (userDto.getName().isEmpty() || userDto.getEmail().isEmpty() || userDto.getPassword().isEmpty()) {
             throw new EmptyFieldException("Todos os campos sao obrigatorios!");
         }
