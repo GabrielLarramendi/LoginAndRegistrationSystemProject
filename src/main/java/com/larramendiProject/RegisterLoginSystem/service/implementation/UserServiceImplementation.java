@@ -12,6 +12,7 @@ import com.larramendiProject.RegisterLoginSystem.model.response.LoginResponse;
 import com.larramendiProject.RegisterLoginSystem.repository.UserRepository;
 import com.larramendiProject.RegisterLoginSystem.model.response.UpdateResponse;
 import com.larramendiProject.RegisterLoginSystem.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +22,11 @@ import java.util.Optional;
 @Service
 public class UserServiceImplementation implements UserService {
 
+    @Autowired
+    private UserRepository userRepository;
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UserServiceImplementation(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -33,20 +36,20 @@ public class UserServiceImplementation implements UserService {
     @Override
     public List<UserDTO> findAll() {
         List<User> savedListUsers = userRepository.findAll();
-        return savedListUsers.stream().map(this::mapUserToUserDto).toList();
+        List<UserDTO> userDTOList = savedListUsers.stream().map(this::mapUserToUserDto).toList();
+        return userDTOList;
     }
 
     @Override
     public UserDTO findById(Long id) {
-        if (id != null) {
-            User savedUser = userRepository
-                    .findById(id)
-                    .orElseThrow(() -> new IdNotFoundException("Usuario com o Id '" + id + "' nao encontrado."));
-            return mapUserToUserDto(savedUser);
-        }
-        else {
+        if (id == null) {
             throw new NullPointerException("Algum valor deve ser passado!");
         }
+
+        User savedUser = userRepository
+                .findById(id)
+                .orElseThrow(() -> new IdNotFoundException("Usuario com o Id '" + id + "' nao encontrado."));
+        return mapUserToUserDto(savedUser);
     }
 
     @Override
