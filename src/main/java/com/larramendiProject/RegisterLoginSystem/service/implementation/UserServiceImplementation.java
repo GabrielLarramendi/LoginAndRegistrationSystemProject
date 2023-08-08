@@ -85,7 +85,25 @@ public class UserServiceImplementation implements UserService {
         }
 
         if (!userDTO.getEmail().isEmpty()) {
-            emailValidation(userDTO, user);
+            String newEmail = userDTO.getEmail();
+            String currentEmail = user.getEmail();
+
+            String newPassword = userDTO.getPassword();
+            String encodedPassword = user.getPassword();
+            boolean isPwdRight = passwordEncoder.matches(newPassword, encodedPassword);
+            if (isPwdRight) {
+                if (newEmail != null && newEmail.equals(currentEmail)) {
+                    throw new EmailAlreadyExistsException("O novo email é o mesmo que o email atualmente registrado na sua conta.");
+                }
+                User existentUserByEmail = userRepository.findByEmail(userDTO.getEmail());
+                if (existentUserByEmail != null) {
+                    throw new EmailAlreadyExistsException("Este email já está sendo utilizado por outro usuário!");
+                }
+                user.setEmail(userDTO.getEmail());
+            }
+            else {
+                throw new InvalidPasswordException("Senha incorreta!");
+            }
         }
 
         userRepository.save(user);
@@ -147,28 +165,6 @@ public class UserServiceImplementation implements UserService {
         }
     }
 
-    public void emailValidation(UserDTO userDTO, User user) {
-        String newEmail = userDTO.getEmail();
-        String currentEmail = user.getEmail();
-
-        String newPassword = userDTO.getPassword();
-        String encodedPassword = user.getPassword();
-        boolean isPwdRight = passwordEncoder.matches(newPassword, encodedPassword);
-        if (isPwdRight) {
-            if (newEmail != null && newEmail.equals(currentEmail)) {
-                throw new EmailAlreadyExistsException("O novo email é o mesmo que o email atualmente registrado na sua conta.");
-            }
-            User existentUserByEmail = userRepository.findByEmail(userDTO.getEmail());
-            if (existentUserByEmail != null) {
-                throw new EmailAlreadyExistsException("Este email já está sendo utilizado por outro usuário!");
-            }
-            user.setEmail(userDTO.getEmail());
-            userRepository.save(user);
-        } else {
-            throw new InvalidPasswordException("Senha incorreta!");
-        }
-    }
-
     public UserDTO mapUserToUserDto (User user){
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
@@ -177,7 +173,4 @@ public class UserServiceImplementation implements UserService {
         userDTO.setPassword(user.getPassword());
         return userDTO;
     }
-
 }
-
-

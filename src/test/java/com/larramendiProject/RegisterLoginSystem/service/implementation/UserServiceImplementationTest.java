@@ -2,6 +2,7 @@ package com.larramendiProject.RegisterLoginSystem.service.implementation;
 
 import com.larramendiProject.RegisterLoginSystem.exceptions.EmailAlreadyExistsException;
 import com.larramendiProject.RegisterLoginSystem.exceptions.EmptyFieldException;
+import com.larramendiProject.RegisterLoginSystem.exceptions.InvalidPasswordException;
 import com.larramendiProject.RegisterLoginSystem.model.dto.UserDTO;
 import com.larramendiProject.RegisterLoginSystem.model.entity.User;
 import com.larramendiProject.RegisterLoginSystem.exceptions.IdNotFoundException;
@@ -27,12 +28,11 @@ class UserServiceImplementationTest {
 
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private PasswordEncoder passwordEncoder;
-
     @InjectMocks
     private final UserServiceImplementation userServiceImplementation = new UserServiceImplementation(userRepository, passwordEncoder);
+
 
     @Test
     void findAllUsers_ShouldReturnUserDtoList() {
@@ -88,8 +88,75 @@ class UserServiceImplementationTest {
 
     @Test
     void saveUser_ShouldSaveUserAndReturnUserDTO() {
+        UserDTO userDTO = new UserDTO(1L, "Gabriel", "gabriel@gmail.com", "123");
+        when(passwordEncoder.encode(userDTO.getPassword())).thenReturn(userDTO.getPassword());
 
+        User user = new User(
+                userDTO.getId(),
+                userDTO.getName(),
+                userDTO.getEmail(),
+                passwordEncoder.encode(userDTO.getPassword())
+        );
+
+        assertEquals(user.getId(), userDTO.getId());
+        assertEquals(user.getName(), userDTO.getName());
+        assertEquals(user.getEmail(), userDTO.getEmail());
+        assertEquals(user.getPassword(), userDTO.getPassword());
     }
+    @Test
+    void saveUser_emptyFields_ShouldThrowEmptyFieldException() {
+        UserDTO userDTOEmptyName = new UserDTO(1L, "", "gabriel@gmail.com", "123");
+        UserDTO userDTOEmptyEmail = new UserDTO(1L, "gabriel", "", "123");
+        UserDTO userDTOEmptyPwd = new UserDTO(1L, "gabriel", "gabriel@gmail.com", "");
+        UserDTO userDTOAllFieldsEmpty = new UserDTO(1L, "", "", "");
+
+        assertThrows(EmptyFieldException.class, () -> userServiceImplementation.saveUser(userDTOEmptyName));
+        assertThrows(EmptyFieldException.class, () -> userServiceImplementation.saveUser(userDTOEmptyEmail));
+        assertThrows(EmptyFieldException.class, () -> userServiceImplementation.saveUser(userDTOEmptyPwd));
+        assertThrows(EmptyFieldException.class, () -> userServiceImplementation.saveUser(userDTOAllFieldsEmpty));
+    }
+    @Test
+    void saveUser_EmailDoesNotExist_ShouldSaveUser() {
+        UserDTO userDTO = new UserDTO(1L, "Gabriel", "gabriel@gmail.com", "123");
+
+        when(userRepository.findByEmail(userDTO.getEmail())).thenReturn(null);
+        when(passwordEncoder.encode(userDTO.getPassword())).thenReturn("123");
+
+        UserDTO savedUserDTO = userServiceImplementation.saveUser(userDTO);
+
+        assertNotNull(savedUserDTO);
+        assertEquals(userDTO.getName(), savedUserDTO.getName());
+        assertEquals(userDTO.getEmail(), savedUserDTO.getEmail());
+        assertEquals(userDTO.getPassword(), savedUserDTO.getPassword());
+    }
+    @Test
+    void saveUser_EmailAlreadyExists_ShouldThrowEmailAlreadyExistsException() {
+        UserDTO userDTO = new UserDTO(1L, "Gabriel", "gabriel@gmail.com", "123");
+        User user = new User(1L, "Gabriel", "gabriel@gmail.com", "123");
+        when(userRepository.findByEmail(userDTO.getEmail())).thenReturn(user);
+        assertThrows(EmailAlreadyExistsException.class, () -> userServiceImplementation.saveUser(userDTO));
+    }
+
+
+    @Test
+    void updateUser_UpdateName() {
+        //Metodo recebe user DTO
+        UserDTO userDTO = new UserDTO(1L, "Gabriel Larramendi", "", "");
+
+        User user = new User(userDTO.getId(), "Gabriel", "gabriel@gmail.com", "123");
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        User mockUser = userRepository.findById(1L).get();
+
+        UserDTO updatedUser = userServiceImplementation.updateData(userDTO, 1L);
+
+        assertEquals(userDTO.getName(), updatedUser.getName());
+        assertNotNull(userDTO);
+    }
+
+
+
+
 
 
 
