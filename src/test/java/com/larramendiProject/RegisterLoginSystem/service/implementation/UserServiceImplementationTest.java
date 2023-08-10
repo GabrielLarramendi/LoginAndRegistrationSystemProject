@@ -3,10 +3,12 @@ package com.larramendiProject.RegisterLoginSystem.service.implementation;
 import com.larramendiProject.RegisterLoginSystem.exceptions.EmailAlreadyExistsException;
 import com.larramendiProject.RegisterLoginSystem.exceptions.EmptyFieldException;
 import com.larramendiProject.RegisterLoginSystem.exceptions.InvalidPasswordException;
+import com.larramendiProject.RegisterLoginSystem.model.dto.LoginDTO;
 import com.larramendiProject.RegisterLoginSystem.model.dto.UpdatePasswordDTO;
 import com.larramendiProject.RegisterLoginSystem.model.dto.UserDTO;
 import com.larramendiProject.RegisterLoginSystem.model.entity.User;
 import com.larramendiProject.RegisterLoginSystem.exceptions.IdNotFoundException;
+import com.larramendiProject.RegisterLoginSystem.model.response.LoginResponse;
 import com.larramendiProject.RegisterLoginSystem.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -250,17 +252,55 @@ class UserServiceImplementationTest {
 
     @Test
     void deleteUser_DeleteById_Success() {
-        User user = new User(1L, "Gabs", "gabriel@gmail.com", "123");
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-        doNothing().when(userRepository).delete(user);
+        User user = new User(1L, "", "", "");
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
         userServiceImplementation.deleteUser(user.getId());
+
         verify(userRepository, times(1)).delete(user);
     }
-
     @Test
     void deleteUser_Fail_ShouldThrowIdNotFoundException() {
         Long id = 2L;
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(IdNotFoundException.class, () -> userServiceImplementation.deleteUser(id));
+    }
+
+
+    @Test
+    void loginUser_Success_EmailExsists_CorrectPassword() {
+        LoginDTO loginAccount = new LoginDTO("gabriel@gmail.com", "123");
+        User mockUser = new User(1L, "Gabs", "gabriel@gmail.com", "123");
+
+        when(userRepository.findByEmail(loginAccount.getEmail())).thenReturn(mockUser);
+        when(passwordEncoder.matches(loginAccount.getPassword(), mockUser.getPassword())).thenReturn(true);
+
+        LoginResponse loginResponse = userServiceImplementation.loginUser(loginAccount);
+
+        assertTrue(loginResponse.isStatus());
+    }
+    @Test
+    void loginUser_Fail_EmailExists_IncorrectPassword() {
+        LoginDTO loginAccount = new LoginDTO("gabriel@gmail.com", "1234");
+        User mockUser = new User(1L, "Gabs", "gabriel@gmail.com", "123");
+
+        when(userRepository.findByEmail(loginAccount.getEmail())).thenReturn(mockUser);
+        when(passwordEncoder.matches(loginAccount.getPassword(), mockUser.getPassword())).thenReturn(false);
+
+        LoginResponse loginResponse = userServiceImplementation.loginUser(loginAccount);
+
+        assertFalse(loginResponse.isStatus());
+        assertEquals("Senha incorreta", loginResponse.getMessage());
+    }
+    @Test
+    void loginUser_Fail_EmailDoesNotExist() {
+        LoginDTO loginAccount = new LoginDTO("gabriel@gmail.com", "1234");
+
+        when(userRepository.findByEmail(loginAccount.getEmail())).thenReturn(null);
+
+        LoginResponse loginResponse = userServiceImplementation.loginUser(loginAccount);
+
+        assertFalse(loginResponse.isStatus());
+        assertEquals("Email nao existe", loginResponse.getMessage());
     }
 }
