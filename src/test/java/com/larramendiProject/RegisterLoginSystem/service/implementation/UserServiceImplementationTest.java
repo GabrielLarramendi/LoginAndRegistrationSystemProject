@@ -216,13 +216,8 @@ class UserServiceImplementationTest {
         UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("123", "aaa", "aaa");
         User user = new User(1L, "Gabs", "gabriel@gmail.com", "123");
 
-        //Confere se a senha passada eh igual ao do banco de dados
         when(passwordEncoder.matches(updatePasswordDTO.getOldPwd(), user.getPassword())).thenReturn(true);
-
-        //Quando o repository for chamado, retorna o user com o mesmo ID passado na funcao update Pwd
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-
-        //Quando usar esse metodo passando a nova senha, retorna ela para comparar
         when(passwordEncoder.encode(updatePasswordDTO.getNewPwd())).thenReturn("aaa");
 
         UserDTO userDTO = userServiceImplementation.updateUserPassword(updatePasswordDTO, 1L);
@@ -234,10 +229,7 @@ class UserServiceImplementationTest {
         UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("123", "aaa", "bbb");
         User user = new User(1L, "Gabs", "gabriel@gmail.com", "123");
 
-        //Confere se a senha passada eh igual ao do banco de dados
         when(passwordEncoder.matches(updatePasswordDTO.getOldPwd(), user.getPassword())).thenReturn(true);
-
-        //Quando o repository for chamado, retorna o user com o mesmo ID passado na funcao update Pwd
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         InvalidPasswordException exception = assertThrows(InvalidPasswordException.class, () -> userServiceImplementation.updateUserPassword(updatePasswordDTO, 1L));
@@ -248,10 +240,7 @@ class UserServiceImplementationTest {
         UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("123", "aaa", "bbb");
         User user = new User(1L, "Gabs", "gabriel@gmail.com", "123");
 
-        //Confere se a senha passada eh igual ao do banco de dados
         when(passwordEncoder.matches(updatePasswordDTO.getOldPwd(), user.getPassword())).thenReturn(false);
-
-        //Quando o repository for chamado, retorna o user com o mesmo ID passado na funcao update Pwd
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         InvalidPasswordException exception = assertThrows(InvalidPasswordException.class, () -> userServiceImplementation.updateUserPassword(updatePasswordDTO, 1L));
@@ -261,10 +250,10 @@ class UserServiceImplementationTest {
 
     @Test
     void deleteUser_DeleteById_Success() {
-        List<User> mockUserList = Arrays.asList(
-                new User(1L, "Gabriel", "gabriel@gmail.com", "123"),
-                new User(2L, "Maria", "maria@gmail.com", "1234"),
-                new User(3L, "Joao", "joao@gmail.com", "12345")
-        );
+        User user = new User(1L, "Gabs", "gabriel@gmail.com", "123");
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        doNothing().when(userRepository).delete(user);
+        userServiceImplementation.deleteUser(user.getId());
+        verify(userRepository, times(1)).delete(user);
     }
 }
