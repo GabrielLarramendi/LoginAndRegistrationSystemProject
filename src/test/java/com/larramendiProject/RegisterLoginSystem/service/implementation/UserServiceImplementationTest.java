@@ -256,4 +256,11 @@ class UserServiceImplementationTest {
         userServiceImplementation.deleteUser(user.getId());
         verify(userRepository, times(1)).delete(user);
     }
+
+    @Test
+    void deleteUser_Fail_ShouldThrowIdNotFoundException() {
+        Long id = 2L;
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(IdNotFoundException.class, () -> userServiceImplementation.deleteUser(id));
+    }
 }
