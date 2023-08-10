@@ -46,9 +46,9 @@ public class UserController {
     }
 
     @PutMapping(path = "update/password/{id}")
-    public ResponseEntity<UpdateResponse> updateUserPassword(@RequestBody UpdatePasswordDTO updatePasswordDTO, @PathVariable Long id) {
-        UpdateResponse updateMessage = userService.updateUserPassword(updatePasswordDTO, id);
-        return ResponseEntity.ok(updateMessage);
+    public ResponseEntity<UserDTO> updateUserPassword(@RequestBody UpdatePasswordDTO updatePasswordDTO, @PathVariable Long id) {
+        UserDTO userDTO = userService.updateUserPassword(updatePasswordDTO, id);
+        return ResponseEntity.ok().body(userDTO);
     }
 
     @PostMapping(path = "/login")

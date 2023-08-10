@@ -111,28 +111,30 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UpdateResponse updateUserPassword(UpdatePasswordDTO updatePasswordDTO, Long id) {
+    public UserDTO updateUserPassword(UpdatePasswordDTO updatePasswordDTO, Long id) {
         User user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new IdNotFoundException("Usuario com o Id '" + id + "' nao encontrado."));
 
-        String currentPwdToConfirm = updatePasswordDTO.getOldPwd();
+        String currentPwd = updatePasswordDTO.getOldPwd();
         String encodedPassword = user.getPassword();
-        boolean isPwdRight = passwordEncoder.matches(currentPwdToConfirm, encodedPassword);
+
+        boolean isPwdRight = passwordEncoder.matches(currentPwd, encodedPassword);
         if (isPwdRight) {
             String newPwd = updatePasswordDTO.getNewPwd();
             String confirmNewPwd = updatePasswordDTO.getConfirmNewPwd();
             if (newPwd.equals(confirmNewPwd)) {
                 user.setPassword(this.passwordEncoder.encode(updatePasswordDTO.getNewPwd()));
-                userRepository.save(user);
-                return new UpdateResponse("Senha alterado com sucesso!", true);
             }
             else {
-                return new UpdateResponse("A confirmacao da senha nao confere com a nova senha informada.", false);
+                throw new InvalidPasswordException("A confirmacao da senha nao confere com a nova senha informada.");
             }
         } else {
-            return new UpdateResponse("Senha atual incorreta.", false);
+            throw new InvalidPasswordException("Senha atual incorreta.");
         }
+
+        userRepository.save(user);
+        return mapUserToUserDto(user);
     }
 
     @Override

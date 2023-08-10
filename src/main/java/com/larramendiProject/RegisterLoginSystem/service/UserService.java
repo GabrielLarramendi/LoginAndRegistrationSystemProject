@@ -18,7 +18,7 @@ public interface UserService {
 
     UserDTO updateData(UserDTO userDTO, Long id);
 
-    UpdateResponse updateUserPassword(UpdatePasswordDTO updatePasswordDTO, Long id);
+    UserDTO updateUserPassword(UpdatePasswordDTO updatePasswordDTO, Long id);
 
     void deleteUser(Long id);
 
