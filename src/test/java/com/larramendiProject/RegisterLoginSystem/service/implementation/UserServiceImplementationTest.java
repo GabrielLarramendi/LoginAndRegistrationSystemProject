@@ -39,7 +39,7 @@ class UserServiceImplementationTest {
         List<User> mockUserList = Arrays.asList(
                 new User(1L, "Gabriel", "gabriel@gmail.com", "123"),
                 new User(2L, "Maria", "maria@gmail.com", "1234"),
-                new User(3L, "Joao", "joao@gmail.com", "12345")
+                new User(3L, "Joao", "joao@gmail.com", "123456")
         );
 
         when(userRepository.findAll()).thenReturn(mockUserList);
