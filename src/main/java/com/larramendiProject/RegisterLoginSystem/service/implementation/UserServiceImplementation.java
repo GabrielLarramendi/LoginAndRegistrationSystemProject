@@ -10,14 +10,12 @@ import com.larramendiProject.RegisterLoginSystem.model.dto.UpdatePasswordDTO;
 import com.larramendiProject.RegisterLoginSystem.model.dto.UserDTO;
 import com.larramendiProject.RegisterLoginSystem.model.response.LoginResponse;
 import com.larramendiProject.RegisterLoginSystem.repository.UserRepository;
-import com.larramendiProject.RegisterLoginSystem.model.response.UpdateResponse;
 import com.larramendiProject.RegisterLoginSystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImplementation implements UserService {
