@@ -23,10 +23,10 @@ import java.util.Optional;
 public class UserServiceImplementation implements UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public UserServiceImplementation(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;

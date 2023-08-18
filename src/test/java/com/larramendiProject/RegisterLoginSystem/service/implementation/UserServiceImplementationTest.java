@@ -268,7 +268,7 @@ class UserServiceImplementationTest {
 
 
     @Test
-    void loginUser_Success_EmailExsists_CorrectPassword() {
+    void loginUser_Success_EmailExists_CorrectPassword() {
         LoginDTO loginAccount = new LoginDTO("gabriel@gmail.com", "123");
         User mockUser = new User(1L, "Gabs", "gabriel@gmail.com", "123");
 

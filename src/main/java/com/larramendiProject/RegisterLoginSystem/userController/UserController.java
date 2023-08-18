@@ -4,7 +4,6 @@ import com.larramendiProject.RegisterLoginSystem.model.dto.LoginDTO;
 import com.larramendiProject.RegisterLoginSystem.model.dto.UpdatePasswordDTO;
 import com.larramendiProject.RegisterLoginSystem.model.dto.UserDTO;
 import com.larramendiProject.RegisterLoginSystem.model.response.LoginResponse;
-import com.larramendiProject.RegisterLoginSystem.model.response.UpdateResponse;
 import com.larramendiProject.RegisterLoginSystem.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +34,7 @@ public class UserController {
 
     @PostMapping(path = "/save")
     public ResponseEntity<UserDTO> saveUser(@Valid @RequestBody UserDTO userDto) {
-        UserDTO user = userService.saveUser(userDto);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(userService.saveUser(userDto));
     }
 
     @PutMapping(path = "updateData/{id}")
